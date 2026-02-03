@@ -1,2 +1,32 @@
-# materials
- Study material (slides, documents, labs, etc) for the "Web Applications" course (Politecnico di Torino, 2025/2026) 
+# [Web Applications (2025/2026)](https://github.com/polito-WA-2026)
+
+Material for the course _Web Applications_ (in English) for the Master Degree in Cybersecurity Engineering at Politecnico di Torino.
+
+## Slides
+
+- [Introduction to the course](slides/0-00-intro-2026-WA.pdf)
+- [Software installation instructions](slides/0-01-installation-instructions-2026-WA.pdf)
+
+### Javascript
+
+- ...
+
+### Web Servers and server-side APIs
+
+- ...
+ 
+### Browsers and client-side applications
+
+- ...
+
+### React
+
+- ...
+
+## Exercises and examples in class
+
+- [Exercises and examples developed in the classroom](https://github.com/polito-WA-2026/wa-weeks)
+
+## Laboratories (solutions [here](https://github.com/polito-WA-2026/labs-code))
+
+- Lab 1: ...
