@@ -9,6 +9,8 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 
 ### Javascript
 
+- [JavaScript Basics](slides/1-01-javascript-basics.pdf)
+- [JavaScript Objects and Functions](slides/1-02-javascript-objects-functions.pdf)
 - ...
 
 ### Web Servers and server-side APIs
