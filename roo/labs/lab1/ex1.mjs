@@ -1,0 +1,117 @@
+/* 
+1. Create a Film Library
+In this exercise, you will implement a simple application to track the films that a person wants to watch and
+the ones they have already watched. Each film is represented by the following fields:
+§
+A unique numerical id (mandatory)
+§
+A title (mandatory)
+§
+A Boolean value to represent whether the film is among the person’s favorites (default value: false)
+§
+A date corresponding to the date when the person watched the film (optional)
+§
+A numerical value between 1 and 5 to represent the rating that the person has given to the film after
+watching it (optional)
+First, implement a constructor function to create Film objects.
+Second, implement a constructor function to create a FilmLibrary, an object containing an array of Films.
+Then, implement the addNewFilm method, which adds a new Film object, passed as parameter, to the
+FilmLibrary. For simplicity, the film id is decided by who created the Film object and no further checks are
+needed.
+Finally, using the last method, populate the FilmLibrary. For instance, you can take inspiration from the
+following list:
+Id: 1, Title: Pulp Fiction, Favorite: true, Watch date: March 10, 2023, Score: 5
+Id: 2, Title: 21 Grams, Favorite: true, Watch date: March 17, 2023, Score: 4
+Id: 3, Title: Star Wars, Favorite: false, Watch date: <not defined>, Score: <not assigned>
+Id: 4, Title: Matrix, Favorite: false, Watch date: <not defined>, Score: <not assigned>
+Id: 5, Title: Shrek, Favorite: false, Watch date: March 21, 2023, Score: 3
+To verify that you correctly populated the FilmLibrary, implement a print method. This method prints in the
+console the whole list of Films stored by the FilmLibrary.
+Hint: you may use the day.js library to create and handle the dates. 
+*/
+import dayjs from "dayjs";
+
+function printFilmList(title, films) {
+    console.log(title);
+    films.forEach((film) => {
+        const formattedDate = film.watchDate ? film.watchDate.format("MMMM D, YYYY") : "<not defined>";
+        const formattedRating = film.rating !== null ? film.rating : "<not defined>";
+        console.log(
+            `Id: ${film.id}, Title: ${film.title}, Favorite: ${film.isFavorite}, Watch date: ${formattedDate}, Score: ${formattedRating}`
+        );
+    });
+}
+
+function Film(id, title, isFavorite = false, watchDate = null, rating = null) {
+    this.id = id;
+    this.title = title;
+    this.isFavorite = isFavorite;
+    this.watchDate = watchDate ? dayjs(watchDate) : null;
+    this.rating = rating;
+}
+
+function FilmLibrary() {
+    this.films = [];
+
+    this.addNewFilm = function (film) {
+        this.films.push(film);
+    }
+
+    this.print = function () {
+        this.films.forEach(film => {
+            const formattedDate = film.watchDate ? film.watchDate.format("MMMM D, YYYY") : "<not defined>";
+            const formattedRating = film.rating !== null ? film.rating : "<not defined>";
+            console.log(`Id: ${film.id}, Title: ${film.title}, Favorite: ${film.isFavorite}, Watch date: ${formattedDate}, Score: ${formattedRating}`);
+        });
+    }
+
+    this.sortByDate = function () {
+        const sortedFilms = [...this.films].sort((a, b) => {
+            if (a.watchDate === null && b.watchDate === null) return 0;
+            if (a.watchDate === null) return 1;
+            if (b.watchDate === null) return -1;
+            return a.watchDate.diff(b.watchDate)
+        });
+        return sortedFilms;
+    }
+
+    this.deleteFilm = function (id) {
+        this.films = this.films.filter((film) => film.id !== id);
+    }
+
+    this.resetWatchedFilms = function () {
+        this.films.forEach((film) => {
+            film.watchDate = null;
+        });
+    };
+
+    this.getRated = function () {
+        return [...this.films]
+            .filter((film) => film.rating !== null)
+            .sort((a, b) => b.rating - a.rating);
+    };
+
+}
+
+const myFilmLibrary = new FilmLibrary();
+
+myFilmLibrary.addNewFilm(new Film(1, "Pulp Fiction", true, "March 10, 2023", 5)); 
+myFilmLibrary.addNewFilm(new Film(2, "21 Grams", true, "March 17, 2023", 4)); 
+myFilmLibrary.addNewFilm(new Film(3, "Star Wars", false, null, null)); 
+myFilmLibrary.addNewFilm(new Film(4, "Matrix", false, null, null)); 
+myFilmLibrary.addNewFilm(new Film(5, "Shrek", false, "March 21, 2023", 3));     
+
+myFilmLibrary.print();
+
+const sortedFilms = myFilmLibrary.sortByDate();
+printFilmList("\n***** List of films sorted by date *****", sortedFilms);
+
+myFilmLibrary.deleteFilm(4);
+myFilmLibrary.print();
+
+const ratedFilms = myFilmLibrary.getRated();
+printFilmList("\n***** Films filtered, only the rated ones *****", ratedFilms);
+
+myFilmLibrary.resetWatchedFilms();
+myFilmLibrary.print();
+
