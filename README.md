@@ -23,10 +23,13 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 - [Web architecture](slides/2-01-web-architecture.pdf)
 - [Express.js](slides/2-02-Express.pdf)
 - [HTTP APIs](slides/2-03-API.pdf)
-- ...
+- [API security](slides/2-04-API-security.pdf)
  
 ### Browsers and client-side applications
 
+- [Introduction to modern browsers](slides/3-01-browser-intro.pdf)
+- [Modern HTML](slides/3-02-html.pdf)
+- [Modern CSS, Flex, Bootstrap](slides/3-03-css.pdf)
 - ...
 
 ### React
@@ -41,3 +44,4 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 
 - Lab 1: [Getting started with Node.js](labs/lab01-getting-started-node.pdf)
 - Lab 2: [Node.js with database](labs/lab02-node-database.pdf)
+- Lab 3: [Express and APIs](labs/lab03-express.pdf)
