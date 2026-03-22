@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.19",
+    "express": "^5.2.1",
     "sqlite3": "^6.0.1"
   }
 }

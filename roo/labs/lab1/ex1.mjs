@@ -55,7 +55,7 @@ function Film(id, title, isFavorite = false, watchDate = null, rating = null) {
 }
 
 function FilmLibrary() {
-    this.films = [];
+    // this.films = [];
 
     this.addNewFilm = function (film) {
         this.films.push(film);
@@ -213,7 +213,7 @@ function FilmLibrary() {
         return new Promise( (resolve, reject) => {
             const favInt = film.isFavorite ? 1 : 0;
             const dateStr = film.watchDate ? film.watchDate.format("YYYY-MM-DD") : null;
-                db.all('INSERT into films (id, title, favorite, watchdate, rating) VALUES (?, ?, ?, ?, ?)', [film.id, film.title, favInt, dateStr, film.rating], (err) => {
+                db.run('INSERT into films (id, title, favorite, watchdate, rating) VALUES (?, ?, ?, ?, ?)', [film.id, film.title, favInt, dateStr, film.rating], (err) => {
                     if (err)
                         reject(err);
                     else {
@@ -225,7 +225,7 @@ function FilmLibrary() {
 
     this.deleteFilm = function (id) {
         return new Promise( (resolve, reject) => {
-                db.all('DELETE FROM films WHERE id = ?', id, (err) => {
+                db.run('DELETE FROM films WHERE id = ?', [id], (err) => {
                     if (err)
                         reject(err);
                     else {
@@ -278,6 +278,7 @@ myFilmLibrary.print();
 /*
 LAB 2
 */
+/*
 const myFilmLibrary = new FilmLibrary();
 
 await myFilmLibrary.getAllFilms()
@@ -347,3 +348,33 @@ try {
     } catch (err) {
         console.error("Failed to insert film:", err);
     }
+    
+*/
+
+/* LAB 3 
+Lab 3: APIs with Express
+This week you will create a basic back-end for your FilmLibrary. To do so, you will use the Express framework.
+The back-end must implement a series of APIs to support the main features of the FilmLibrary you have
+developed so far: create, read, update, and delete the films. The data will be persistently stored in an SQLite
+database (handled by the server as a file)
+*/
+
+import express from 'express';
+
+const app = express();
+const port = 3001;
+const myFilmLibrary = new FilmLibrary();
+
+app.get('/api/films', async (req, res) => {
+    try {
+        const films = await myFilmLibrary.getAllFilms();
+        res.json(films);
+    } catch (err) {
+        console.error("Error fetching films:", err);
+        res.status(500).json({ error: "Failed to retrieve films from the database" });
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+});
