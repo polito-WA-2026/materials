@@ -30,6 +30,7 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 - [Introduction to modern browsers](slides/3-01-browser-intro.pdf)
 - [Modern HTML](slides/3-02-html.pdf)
 - [Modern CSS, Flex, Bootstrap](slides/3-03-css.pdf)
+- [JS in the browser: DOM, forms, events](slides/3-04-JS-browser.pdf)
 - ...
 
 ### React
@@ -45,3 +46,6 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 - Lab 1: [Getting started with Node.js](labs/lab01-getting-started-node.pdf)
 - Lab 2: [Node.js with database](labs/lab02-node-database.pdf)
 - Lab 3: [Express and APIs](labs/lab03-express.pdf)
+- Lab 4: [API security](labs/lab04-API-server.pdf)
+- Lab 5: [HTML, CSS](labs/lab05-html-css.pdf)
+- Lab 6: [JS in browser](labs/lab06-js-browser.pdf)
