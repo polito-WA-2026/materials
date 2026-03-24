@@ -266,7 +266,7 @@ function FilmLibrary() {
 
     this.updateFilmWatchdate = function () {
         return new Promise( (resolve, reject) => {
-            db.run('UPDATE films SET watchdate = NULL', (err) => {
+            db.run('UPDATE films SET watchdate IS NULL', (err) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -279,7 +279,7 @@ function FilmLibrary() {
     this.markFavorite = function (id, isFavorite) {
         return new Promise( (resolve, reject) => {
             const favInt = isFavorite ? 1 : 0;
-            db.run('UPDATE films SET favorite = ? WHERE id = ? ', [favInt, id], (err) => {
+            db.run('UPDATE films SET favorite = ? WHERE id = ? ', [favInt, id], function(err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -291,7 +291,7 @@ function FilmLibrary() {
 
     this.changeRating = function (id, delta) {
         return new Promise( (resolve, reject) => {
-            db.run('UPDATE films SET rating = rating + ? WHERE id = ? AND rating NOT NULL', [delta, id], (err) => {
+            db.run('UPDATE films SET rating = rating + ? WHERE id = ? AND rating IS NOT NULL', [delta, id], function(err) {
                 if (err){
                     reject(err);
                 } else {
@@ -303,10 +303,9 @@ function FilmLibrary() {
 
     this.updateFilm = function (id, film) {
         return new Promise( (resolve, reject) => {
-                      
-            const favInt = isFavorite ? 1 : 0;
-            const dateStr = film.watchDate ? film.watchDate.format("YYYY-MM-DD") : null;
-            db.run('UPDATE films SET title = ?, favorite = ?, watchdate = ?, rating = ? WHERE id = ?', [film.title, favInt, dateStr, film.rating, id], (err) => {
+            const favInt = film.isFavorite ? 1 : 0;
+            const dateStr = film.watchDate ? dayjs(film.watchDate).format("YYYY-MM-DD") : null;
+            db.run('UPDATE films SET title = ?, favorite = ?, watchdate = ?, rating = ? WHERE id = ?', [film.title, favInt, dateStr, film.rating, id], function(err){
                 if (err){
                     reject(err);
                 } else {
@@ -349,22 +348,23 @@ app.get('/api/films', async (req, res) => {
         } else {
             films = await myFilmLibrary.getAllFilms();
         }
-        res.json(films)
+        res.status(202).json(films)
     } catch (err) {
         console.error("Error fetching films:", err);
         res.status(500).json({ error: "Failed to retrieve films from the database" });
     }
 });
 
-app.get('/api/films/:id', async (req, res) => {
+app.put('/api/films/:id', async (req, res) => {
     try {
         const film = await myFilmLibrary.getFilmById(req.params.id);
-        
-        if (film.error) {
-            res.status(404).json(film); 
-        } else {
-            res.json(film); 
-        }
+        if (film.error) return res.status(404).json(film);
+        if (body.title      !== undefined) film.title      = body.title;
+        if (body.isFavorite !== undefined) film.isFavorite = body.isFavorite;
+        if (body.watchDate  !== undefined) film.watchDate  = body.watchDate;
+        if (body.rating     !== undefined) film.rating     = body.rating;
+        await myFilmLibrary.updateFilm(req.params.id, film);
+        res.status(200).json(film); 
     } catch (err) {
         console.error("Error fetching film:", err);
         res.status(500).json({ error: "Failed to retrieve the film" }); 
@@ -374,6 +374,7 @@ app.get('/api/films/:id', async (req, res) => {
 app.post('/api/films/', async (req, res) => {
     try {
         const answer = req.body;
+        const newFilm = new Film(answer.id, answer.title, answer.isFavorite, answer.watchDate, answer.rating);
         const newFilmId = await myFilmLibrary.insertFilm(answer);
         res.status(201).json({ id: newFilmId, message: "Film inserted successfully!" });
     } catch (err) {
@@ -412,9 +413,8 @@ app.put('/api/films/:id/', async (req, res) => {
         if (film.error) {
             res.status(404).json(film); 
         } else {
-            res.json(film); 
+            res.status(202).json(film); 
         }
-        res.status(200).json({ message: "Films updated successfully!" });
     } catch (err){
         console.error("Error updating film", err);
         res.status(500).json({ error: "Failed to update the film" });
