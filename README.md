@@ -31,6 +31,8 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 - [Modern HTML](slides/3-02-html.pdf)
 - [Modern CSS, Flex, Bootstrap](slides/3-03-css.pdf)
 - [JS in the browser: DOM, forms, events](slides/3-04-JS-browser.pdf)
+- [JS browser security: Cross-Site Scripting (XSS)](slides/3-05-browser-security-XSS.pdf)
+- [Fetch API](slides/3-06-fetch.pdf)
 - ...
 
 ### React
