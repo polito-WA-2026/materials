@@ -40,6 +40,8 @@ Material for the course _Web Applications_ (in English) for the Master Degree in
 - [React elements and JSX](slides/4-02-Elements-and-JSX.pdf)
 - [React state](slides/4-03-Components-and-state-management.pdf)
 - [React forms](slides/4-04-Forms.pdf)
+- [React context](slides/4-05-Context.pdf)
+- [React router](slides/4-06-React-Router.pdf)
 - ...
 
 ## Exercises and examples in class
