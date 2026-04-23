@@ -1,4 +1,2 @@
-GET http://localhost:3001/api/film HTTP/1.1
-
-
+GET http://localhost:3001/api/films HTTP/1.1
 

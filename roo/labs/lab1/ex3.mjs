@@ -1,10 +1,12 @@
 import express from 'express';
 import dayjs from "dayjs";
 import sqlite from "sqlite3";
+import morgan from 'morgan';
 
 const app = express();
 const port = 3001;
-
+app.use(morgan('dev'));
+app.use(express.json());
 const db = new sqlite.Database('films.db', (err) => { 
     if (err) throw err; 
 });
@@ -78,13 +80,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {  
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -97,13 +99,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {               
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -116,13 +118,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {                        
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms.films);
                     }
                 })
             }
@@ -131,17 +133,17 @@ function FilmLibrary() {
 
     this.getAllUnwatched = function () {
         return new Promise( (resolve, reject) => {
-                db.all('SELECT * FROM films WHERE watchdate=NULL', (err, rows) => {
+                db.all('SELECT * FROM films WHERE watchdate IS NULL', (err, rows) => {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms= [];
                         rows.forEach((row) => {                        
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -154,13 +156,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {                        
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -173,13 +175,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {                        
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -192,13 +194,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {                        
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -211,13 +213,13 @@ function FilmLibrary() {
                     if (err)
                         reject(err);
                     else {
-                        this.films = [];
+                        const localFilms = [];
                         rows.forEach((row) => {                        
                         const isFav = row.favorite === 1 || row.favorite === true;
                         const newFilm = new Film(row.id, row.title, isFav, row.watchdate, row.rating);
-                        this.films.push(newFilm);
+                        localFilms.push(newFilm);
                     });
-                    resolve(this.films);
+                    resolve(localFilms);
                     }
                 })
             }
@@ -233,7 +235,7 @@ function FilmLibrary() {
                         reject(err);
                     else {
                     resolve(`Success: '${film.title}' was added to the database!`);
-                }
+                } 
             });
         });
     }
@@ -242,7 +244,7 @@ function FilmLibrary() {
         return new Promise( (resolve, reject) => {
             const favInt = film.isFavorite ? 1 : 0;
             const dateStr = film.watchDate ? film.watchDate.format("YYYY-MM-DD") : null;
-                db.run('INSERT into films (title, favorite, watchdate, rating) VALUES (?, ?, ?, ?)', [film.id, film.title, favInt, dateStr, film.rating], (err) => {
+                db.run('INSERT into films (title, favorite, watchdate, rating) VALUES (?, ?, ?, ?)', [film.title, favInt, dateStr, film.rating], function (err) {
                     if (err)
                         reject(err);
                     else {
@@ -252,13 +254,13 @@ function FilmLibrary() {
         });
     }
 
-    this.deleteFilm = function (id) {
+    this.deleteFilmSQL = function (id) {
         return new Promise( (resolve, reject) => {
-                db.run('DELETE FROM films WHERE id = ?', [id], (err) => {
+                db.run('DELETE FROM films WHERE id = ?', [id], function(err) {
                     if (err)
                         reject(err);
                     else {
-                    resolve(`Success: '${id}' was removed from the database!`);
+                    resolve(this.changes);
                 }
             });
         });
@@ -266,7 +268,7 @@ function FilmLibrary() {
 
     this.updateFilmWatchdate = function () {
         return new Promise( (resolve, reject) => {
-            db.run('UPDATE films SET watchdate IS NULL', (err) => {
+            db.run('UPDATE films SET watchdate = NULL', (err) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -335,20 +337,18 @@ function FilmLibrary() {
 
 app.get('/api/films', async (req, res) => {
     try {
-        let films;
-        console.log(req.query.filter);
-        if (req.query.filter==="favorite"){
-            films = await myFilmLibrary.getAllFavorites();
-        } else if (req.query.filter==="best"){
-            films = await myFilmLibrary.getAllRatingGreaterThan(5);
-        } else if (req.query.filter==="lastmonth"){
-            films = await myFilmLibrary.getAllWatchedLastMonth();
-        } else if (req.query.filter==="unseen"){
-            films = await myFilmLibrary.getAllUnwatched();
-        } else {
-            films = await myFilmLibrary.getAllFilms();
-        }
-        res.status(202).json(films)
+        const filterValues = {
+            'favorite': () => myFilmLibrary.getAllFavorites(),
+            'best': () => myFilmLibrary.getAllRatingGreaterThan(5),
+            'lastmonth': () => myFilmLibrary.getAllWatchedLastMonth(),
+            'unseen': () => myFilmLibrary.getAllUnwatched(),
+            'all': () => myFilmLibrary.getAllFilms()
+        };
+
+        const filter = req.query.filter || 'all';
+        const getFilms = filterValues[filter];
+        const films = await getFilms();
+        res.status(200).json(films);
     } catch (err) {
         console.error("Error fetching films:", err);
         res.status(500).json({ error: "Failed to retrieve films from the database" });
@@ -359,10 +359,10 @@ app.put('/api/films/:id', async (req, res) => {
     try {
         const film = await myFilmLibrary.getFilmById(req.params.id);
         if (film.error) return res.status(404).json(film);
-        if (body.title      !== undefined) film.title      = body.title;
-        if (body.isFavorite !== undefined) film.isFavorite = body.isFavorite;
-        if (body.watchDate  !== undefined) film.watchDate  = body.watchDate;
-        if (body.rating     !== undefined) film.rating     = body.rating;
+        if (req.body.title      !== undefined) film.title      = req.body.title;
+        if (req.body.isFavorite !== undefined) film.isFavorite = req.body.isFavorite;
+        if (req.body.watchDate  !== undefined) film.watchDate  = req.body.watchDate;
+        if (req.body.rating     !== undefined) film.rating     = req.body.rating;
         await myFilmLibrary.updateFilm(req.params.id, film);
         res.status(200).json(film); 
     } catch (err) {
@@ -371,11 +371,11 @@ app.put('/api/films/:id', async (req, res) => {
     }
 });
 
-app.post('/api/films/', async (req, res) => {
+app.post('/api/films', async (req, res) => {
     try {
         const answer = req.body;
-        const newFilm = new Film(answer.id, answer.title, answer.isFavorite, answer.watchDate, answer.rating);
-        const newFilmId = await myFilmLibrary.insertFilm(answer);
+        const newFilm = new Film(null, answer.title, answer.isFavorite, answer.watchDate, answer.rating);
+        const newFilmId = await myFilmLibrary.insertFilmAutoId(newFilm);
         res.status(201).json({ id: newFilmId, message: "Film inserted successfully!" });
     } catch (err) {
         console.error("Error inserting film", err);
@@ -385,8 +385,8 @@ app.post('/api/films/', async (req, res) => {
 
 app.put('/api/films/:id/favorite', async (req, res) => {
     try{
-        const filmId = req.params.id; 
-        const newFavorite = req.body.isFavorite; 
+        const filmId = req.params.id;
+        const newFavorite = req.body.isFavorite;
         await myFilmLibrary.markFavorite(filmId, newFavorite);
         res.status(200).json({ message: "Favorite status updated successfully!" });
     } catch (err){
@@ -407,24 +407,29 @@ app.put('/api/films/:id/delta', async (req, res) => {
     }
 });
 
-app.put('/api/films/:id/', async (req, res) => {
+app.get('/api/films/:id', async (req, res) => {
     try{
         const film = await myFilmLibrary.getFilmById(req.params.id);
         if (film.error) {
             res.status(404).json(film); 
         } else {
-            res.status(202).json(film); 
+            res.status(200).json(film); 
         }
     } catch (err){
-        console.error("Error updating film", err);
-        res.status(500).json({ error: "Failed to update the film" });
+        console.error("Error fetching film", err);
+        res.status(500).json({ error: "Failed to fetch the film" });
     }
 });
 
 app.delete('/api/films/:id', async (req, res) => {
     try {
-        const films = await myFilmLibrary.deleteFilm(req.params.id);
-        res.status(204).end();
+        const changes = await myFilmLibrary.deleteFilmSQL(req.params.id);
+        if (changes === 0){
+            res.status(404).json({ error: "Film not found" }); 
+        }
+        else {
+            res.status(204).end();
+        }
     } catch (err) {
         console.error("Error deleting film", err);
         res.status(500).json({ error: "Failed to delete the film" });
